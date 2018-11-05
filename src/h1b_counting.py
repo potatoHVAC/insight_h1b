@@ -37,24 +37,37 @@ def ratio_formatted(job_count, total):
     num = round(100 * float(job_count) / total, 1)
     return str(num) + '%'
 
+def sort_top_ten(dct):
+    sorted_dct = sorted(dct.items(), key=lambda kv: kv[1])
+    
+    sorted_alpha = []
+    while len(sorted_alpha) < 10 and len(sorted_dct) > 0:
+        group = []
+        group.append(sorted_dct.pop())
+        while len(sorted_dct) > 0 and group[0][1] == sorted_dct[-1][1]:
+            group.append(sorted_dct.pop())
+        sorted_alpha += sorted(group)
+    
+    return sorted_alpha[:10]
+
 def occupation_analysis(count, names, total):
-    sorted_occupations = sorted(count.items(), key=lambda kv: kv[1])
-    sorted_occupations.reverse()
-    top_ten = sorted_occupations[:10]
+    named_count = {}
+    for k,v in count.items():
+        name = names[k]
+        named_count[name] = v
+    top_ten = sort_top_ten(named_count)
     
     occupation_answer = ['TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
     for job in top_ten:
         row = []
-        row.append(names[job[0]])
+        row.append(job[0])
         row.append(str(job[1]))
         row.append(ratio_formatted(job[1], total))
         occupation_answer.append(';'.join(row))
     return "\n".join(occupation_answer)
 
 def state_analysis(count, total):
-    sorted_states = sorted(count.items(), key=lambda kv: kv[1])
-    sorted_states.reverse()
-    top_ten = sorted_states[:10]
+    top_ten = sort_top_ten(count)
     
     states_answer = ['TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
     for state in top_ten:
@@ -64,7 +77,6 @@ def state_analysis(count, total):
         row.append(ratio_formatted(state[1], total))
         states_answer.append(';'.join(row))
     return "\n".join(states_answer)
-
 
 def main():
 

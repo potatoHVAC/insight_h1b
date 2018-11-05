@@ -1,11 +1,6 @@
 TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE
-Computer Systems Analysts;85356;18.8%
-Software Developers, Applications;68570;15.1%
-Computer Programmers;64916;14.3%
-Computer Occupations, All Other;38653;8.5%
-Software Developers, Systems Software;13869;3.0%
-Management Analysts;10547;2.3%
-Accountants and Auditors;8621;1.9%
-Financial Analysts;7785;1.7%
-Network and Computer Systems Administrators;7317;1.6%
-Mechanical Engineers;6561;1.4%
+SOFTWARE DEVELOPERS, APPLICATIONS;6;60.0%
+ACCOUNTANTS AND AUDITORS;1;10.0%
+COMPUTER OCCUPATIONS, ALL OTHER;1;10.0%
+COMPUTER SYSTEMS ANALYST;1;10.0%
+DATABASE ADMINISTRATORS;1;10.0%
