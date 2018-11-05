@@ -80,7 +80,8 @@ def main():
     files = []
     for (dirpath, dirnames, filenames) in walk('./input/'):
         files.extend(filenames)
-    files.remove('README.md')
+    if 'README.md' in files:
+        files.remove('README.md')
     
     with open('./input/' + files[0]) as f:
         lines = list(csv.reader(f, delimiter=';'))
