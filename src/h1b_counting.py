@@ -1,0 +1,108 @@
+import csv
+import re
+
+def header_index(arg, header):
+    for i, ele in enumerate(header):
+        if re.match(arg, ele):
+            return i
+    raise NameError('column not found')
+
+def populate_indices(header):
+    indices = {}
+    indices['status'] = header_index('.*STATUS.*', header)
+    indices['soc'] = header_index('.*SOC_CODE.*', header)
+    indices['job_name'] = header_index('.*SOC_NAME.*', header)
+    indices['job_state'] = header_index('.*WORKSITE_STATE.*', header)
+    return indices     
+    
+def check_soc_hyphen(soc):
+    if len(soc) < 6:
+        return soc
+    soc_lst = list(soc)
+    
+    if soc_lst[2] != '-':
+        if soc_lst[2] == '.':
+            soc_lst[2] = '-'
+        else:
+            soc_lst.insert(2, '-')
+    return ''.join(soc_lst)
+
+def clean_soc(soc):
+    soc_strip = soc.replace(' ', '')
+    soc_hyphen = check_soc_hyphen(soc_strip)
+    return soc_hyphen[:7]
+
+def ratio_formatted(job_count, total):
+    num = round(100 * float(job_count) / total, 1)
+    return str(num) + '%'
+
+def occupation_analysis(count, names, total):
+    sorted_occupations = sorted(count.items(), key=lambda kv: kv[1])
+    sorted_occupations.reverse()
+    top_ten = sorted_occupations[:10]
+    
+    occupation_answer = ['TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
+    for job in top_ten:
+        row = []
+        row.append(names[job[0]])
+        row.append(str(job[1]))
+        row.append(ratio_formatted(job[1], total))
+        occupation_answer.append(';'.join(row))
+    return "\n".join(occupation_answer)
+
+def state_analysis(count, total):
+    sorted_states = sorted(count.items(), key=lambda kv: kv[1])
+    sorted_states.reverse()
+    top_ten = sorted_states[:10]
+    
+    states_answer = ['TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
+    for state in top_ten:
+        row = []
+        row.append(state[0])
+        row.append(str(state[1]))
+        row.append(ratio_formatted(state[1], total))
+        states_answer.append(';'.join(row))
+    return "\n".join(states_answer)
+
+
+def main():
+    with open('./input/tst.csv') as f:
+        lines = list(csv.reader(f, delimiter=';'))
+
+    occupation_dict = {}
+    occupation_count = {}
+    state_count = {}
+    certified_count = 0
+    indices = populate_indices(lines[0])
+    
+    for line in lines[1:]:
+        if line[indices['status']] != 'CERTIFIED':
+            continue    
+        
+        soc = clean_soc(line[indices['soc']])  
+        job_name = line[indices['job_name']]
+        job_state = line[indices['job_state']]
+        if not re.match('\d{2}-\d{4}', soc) or job_state == '':
+            continue
+    
+        certified_count += 1
+    
+        if soc not in occupation_dict:
+            occupation_dict[soc] = job_name
+            occupation_count[soc] = 0
+        elif len(job_name) > len(occupation_dict[soc]):
+            occupation_dict[soc] = job_name
+        occupation_count[soc] += 1
+    
+        state = line[indices['job_state']]
+        if state not in state_count:
+            state_count[state] = 0
+            state_count[state] += 1
+
+    occupation_file = open('./output/top_10_occupations.txt', 'w')  
+    occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))    
+
+    states_file = open('./output/top_10_states.txt', 'w')
+    states_file.write(state_analysis(state_count, certified_count))
+
+main()
