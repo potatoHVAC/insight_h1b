@@ -37,7 +37,17 @@ def ratio_formatted(job_count, total):
     num = round(100 * float(job_count) / total, 1)
     return str(num) + '%'
 
-def sort_top_ten(dct):
+def format_output(top_lst, header, total):
+    answer = [header]
+    for job in top_lst:
+        row = []
+        row.append(job[0])
+        row.append(str(job[1]))
+        row.append(ratio_formatted(job[1], total))
+        answer.append(';'.join(row))
+    return "\n".join(answer)
+
+def sort_top_ten_states(dct):
     sorted_dct = sorted(dct.items(), key=lambda kv: kv[1])
     
     sorted_alpha = []
@@ -50,28 +60,27 @@ def sort_top_ten(dct):
     
     return sorted_alpha[:10]
 
-def format_output(top_lst, header, total):
-    answer = [header]
-    for job in top_lst:
-        row = []
-        row.append(job[0])
-        row.append(str(job[1]))
-        row.append(ratio_formatted(job[1], total))
-        answer.append(';'.join(row))
-    return "\n".join(answer)
+def sort_top_ten_occupations(count, names):
+    sorted_dct = sorted(count.items(), key=lambda kv: kv[1])
+    
+    sorted_alpha = []
+    while len(sorted_alpha) < 10 and len(sorted_dct) > 0:
+        group = []
+        group.append(sorted_dct.pop())
+        while len(sorted_dct) > 0 and group[0][1] == sorted_dct[-1][1]:
+            group.append(sorted_dct.pop())
+        named_group = [ (names[soc], c) for soc, c in group ]
+        sorted_alpha += sorted(named_group)
+    
+    return sorted_alpha[:10]
 
 def occupation_analysis(count, names, total):
-    named_count = {}
-    for k,v in count.items():
-        name = names[k]
-        named_count[name] = v
-    top_ten = sort_top_ten(named_count)
-    
+    top_ten = sort_top_ten_occupations(count, names)   
     head = 'TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
     return format_output(top_ten, head, total)
         
 def state_analysis(count, total):
-    top_ten = sort_top_ten(count)
+    top_ten = sort_top_ten_states(count)
     head = 'TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
     return format_output(top_ten, head, total)
 
@@ -114,7 +123,7 @@ def main():
         if job_state not in state_count:
             state_count[job_state] = 0
         state_count[job_state] += 1
-
+        
     occupation_file = open('./output/top_10_occupations.txt', 'w')  
     occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))
 
