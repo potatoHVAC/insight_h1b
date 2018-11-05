@@ -99,7 +99,7 @@ def main():
         soc = clean_soc(line[indices['soc']])  
         job_name = line[indices['job_name']]
         job_state = line[indices['job_state']]
-        if not re.match('\d{2}-\d{4}', soc) or job_state == '':
+        if not re.match('\d{2}-\d{4}', soc) or not re.match('^[A-Z]{2}$', job_state):
             continue
     
         certified_count += 1
