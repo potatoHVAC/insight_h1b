@@ -50,6 +50,16 @@ def sort_top_ten(dct):
     
     return sorted_alpha[:10]
 
+def format_output(top_lst, header, total):
+    answer = [header]
+    for job in top_lst:
+        row = []
+        row.append(job[0])
+        row.append(str(job[1]))
+        row.append(ratio_formatted(job[1], total))
+        answer.append(';'.join(row))
+    return "\n".join(answer)
+
 def occupation_analysis(count, names, total):
     named_count = {}
     for k,v in count.items():
@@ -57,26 +67,13 @@ def occupation_analysis(count, names, total):
         named_count[name] = v
     top_ten = sort_top_ten(named_count)
     
-    occupation_answer = ['TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
-    for job in top_ten:
-        row = []
-        row.append(job[0])
-        row.append(str(job[1]))
-        row.append(ratio_formatted(job[1], total))
-        occupation_answer.append(';'.join(row))
-    return "\n".join(occupation_answer)
-
+    head = 'TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
+    return format_output(top_ten, head, total)
+        
 def state_analysis(count, total):
     top_ten = sort_top_ten(count)
-    
-    states_answer = ['TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE']
-    for state in top_ten:
-        row = []
-        row.append(state[0])
-        row.append(str(state[1]))
-        row.append(ratio_formatted(state[1], total))
-        states_answer.append(';'.join(row))
-    return "\n".join(states_answer)
+    head = 'TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
+    return format_output(top_ten, head, total)
 
 def main():
 
@@ -119,7 +116,7 @@ def main():
         state_count[state] += 1
 
     occupation_file = open('./output/top_10_occupations.txt', 'w')  
-    occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))    
+    occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))
 
     states_file = open('./output/top_10_states.txt', 'w')
     states_file.write(state_analysis(state_count, certified_count))
