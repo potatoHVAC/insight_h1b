@@ -98,7 +98,7 @@ def main():
         
         soc = clean_soc(line[indices['soc']])  
         job_name = line[indices['job_name']]
-        job_state = line[indices['job_state']]
+        job_state = line[indices['job_state']].upper()
         if not re.match('\d{2}-\d{4}', soc) or not re.match('^[A-Z]{2}$', job_state):
             continue
     
@@ -111,10 +111,9 @@ def main():
             occupation_dict[soc] = job_name
         occupation_count[soc] += 1
     
-        state = line[indices['job_state']]
-        if state not in state_count:
-            state_count[state] = 0
-        state_count[state] += 1
+        if job_state not in state_count:
+            state_count[job_state] = 0
+        state_count[job_state] += 1
 
     occupation_file = open('./output/top_10_occupations.txt', 'w')  
     occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))
