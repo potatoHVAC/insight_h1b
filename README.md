@@ -10,7 +10,8 @@ To clean and analyze the US Department of Labor’s Office of Foreign Labor Cert
 
 # Approach
 
-### Data Cleaning Assumptions:
+#### Data Cleaning Assumptions:
+* SOC numbers with a decimal are subsets of their XX-XXX position and counted as the 
 
 
 # Run Instructions
@@ -26,7 +27,7 @@ The appropriate columns will be automatically collected if the following strings
 
 # Output Information
 
-Two files will be output in the `./output/` folder.
+Two CSV files will be created/overwritten in the `./output/` folder.
  
 * `./output/top_10_occupations.txt`
 * `./output/top_10_states.txt`
@@ -35,7 +36,7 @@ Two files will be output in the `./output/` folder.
 
 Given the input file, `./input/file_name.csv` with the following data:
 ```
-;CASE_STATUS;YEAR_SOC;YEAR_SOC_NAME;WORKSITE_STATE
+id;CASE_STATUS;YEAR_SOC;YEAR_SOC_NAME;WORKSITE_STATE
 1;CERTIFIED;11-1234;DOG WALKER;WA
 2;CERTIFIED;22-1234;PIRATE;CA
 3;CERTIFIED;33-3333;NINJA;CA
@@ -61,3 +62,4 @@ WA;1;25
 
 * Implement threading for the data collection to allow for files larger than the available memory.
 * Both of the sorting methods are almost identical. Candidate for refactoring to follow DRY practices.
+
