@@ -1,10 +1,10 @@
-import csv
-import re
+from csv import reader
+from re import match
 from os import walk
 
 def header_index(arg, header):
     for i, ele in enumerate(header):
-        if re.match(arg, ele):
+        if match(arg, ele):
             return i
     raise NameError('column not found')
 
@@ -93,7 +93,7 @@ def main():
         files.remove('README.md')
     
     with open('./input/' + files[0]) as f:
-        lines = list(csv.reader(f, delimiter=';'))
+        lines = list(reader(f, delimiter=';'))
 
     occupation_dict = {}
     occupation_count = {}
@@ -108,7 +108,7 @@ def main():
         soc = clean_soc(line[indices['soc']])  
         job_name = line[indices['job_name']]
         job_state = line[indices['job_state']].upper()
-        if not re.match('\d{2}-\d{4}', soc) or not re.match('^[A-Z]{2}$', job_state):
+        if not match('\d{2}-\d{4}', soc) or not match('^[A-Z]{2}$', job_state):
             continue
     
         certified_count += 1
