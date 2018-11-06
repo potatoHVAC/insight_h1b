@@ -74,18 +74,17 @@ def sort_top_ten_occupations(count, names):
     
     return sorted_alpha[:10]
 
-def occupation_analysis(count, names, total):
-    top_ten = sort_top_ten_occupations(count, names)   
+def occupation_analysis(data):
+    top_ten = sort_top_ten_occupations(data['occupation_count'], data['occupation_dict'])   
     head = 'TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
-    return format_output(top_ten, head, total)
+    return format_output(top_ten, head, data['certified_count'])
         
-def state_analysis(count, total):
-    top_ten = sort_top_ten_states(count)
+def state_analysis(data):
+    top_ten = sort_top_ten_states(data['state_count'])
     head = 'TOP_STATES;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE'
-    return format_output(top_ten, head, total)
+    return format_output(top_ten, head, data['certified_count'])
 
-def main():
-
+def collect_data_points():
     files = []
     for (dirpath, dirnames, filenames) in walk('./input/'):
         files.extend(filenames)
@@ -123,11 +122,22 @@ def main():
         if job_state not in state_count:
             state_count[job_state] = 0
         state_count[job_state] += 1
-        
+    return {
+        'occupation_dict' : occupation_dict,
+        'occupation_count': occupation_count,
+        'state_count' : state_count,
+        'certified_count': certified_count
+    }        
+
+def analyze_and_output(data):
     occupation_file = open('./output/top_10_occupations.txt', 'w')  
-    occupation_file.write(occupation_analysis(occupation_count, occupation_dict, certified_count))
+    occupation_file.write(occupation_analysis(datat))
 
     states_file = open('./output/top_10_states.txt', 'w')
-    states_file.write(state_analysis(state_count, certified_count))
+    states_file.write(state_analysis(data))
 
+def main():
+    data = collect_data_points()
+    analyze_and_output(data)
+    
 main()
