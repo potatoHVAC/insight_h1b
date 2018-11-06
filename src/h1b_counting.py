@@ -115,7 +115,7 @@ def collect_data_points():
         if soc not in occupation_dict:
             occupation_dict[soc] = job_name
             occupation_count[soc] = 0
-        elif len(job_name) > len(occupation_dict[soc]):
+        elif len(occupation_dict[soc]) == 0:
             occupation_dict[soc] = job_name
         occupation_count[soc] += 1
     

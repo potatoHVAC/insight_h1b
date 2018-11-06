@@ -1,4 +1,4 @@
 TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE
-longer name;3;50.0%
+short name;3;50.0%
 Taxi;2;33.3%
 Plumber;1;16.7%

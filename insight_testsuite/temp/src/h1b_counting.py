@@ -115,7 +115,7 @@ def collect_data_points():
         if soc not in occupation_dict:
             occupation_dict[soc] = job_name
             occupation_count[soc] = 0
-        elif len(job_name) > len(occupation_dict[soc]):
+        elif len(occupation_dict[soc]) == 0:
             occupation_dict[soc] = job_name
         occupation_count[soc] += 1
     
@@ -131,7 +131,7 @@ def collect_data_points():
 
 def analyze_and_output(data):
     occupation_file = open('./output/top_10_occupations.txt', 'w')  
-    occupation_file.write(occupation_analysis(datat))
+    occupation_file.write(occupation_analysis(data))
 
     states_file = open('./output/top_10_states.txt', 'w')
     states_file.write(state_analysis(data))
